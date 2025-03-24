@@ -7,6 +7,7 @@ const Button = ({ onClick, text }) => {
     </button>
   );
 };
+const StatisticLine = ({ name, value }) => <p>{name} {value}</p>;
 
 const Statistics = ({ good, neutral, bad }) => {
   const total = good + neutral + bad;
@@ -19,12 +20,12 @@ const Statistics = ({ good, neutral, bad }) => {
   }
   return (
     <div>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>All {total}</p>
-      <p>average {(good - bad) / total}</p>
-      <p>positive {good / total}</p>
+      <StatisticLine name="good" value={good} />
+      <StatisticLine name="neutral" value={neutral} />
+      <StatisticLine name="bad" value={bad} />
+      <StatisticLine name="All" value={total} />
+      <StatisticLine name="average" value={(good - bad) / total} />
+      <StatisticLine name="positive" value={good / total} />
     </div>
   );
 };
