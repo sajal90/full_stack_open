@@ -32,12 +32,28 @@ const App = () => {
     setVotes(newVotes);
   };
 
+  const getMostVoted = () => {
+    let m = 0;
+    let mIdx = 0;
+
+    for (let i = 0; i < anecdotes.length; ++i) {
+      if (votes[i] > m) {
+        mIdx = i;
+        m = votes[i];
+      }
+    }
+    return mIdx;
+  };
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <p>has {votes[selected]} votes</p>
       <Button onclick={handleVote} text="vote" />
       <Button onclick={handleClick} text="next anecdote" />
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[getMostVoted()]}</p>
     </div>
   );
 };
