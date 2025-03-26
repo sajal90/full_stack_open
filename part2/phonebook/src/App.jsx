@@ -12,6 +12,14 @@ const App = () => {
 
   const handleSumbit = (event) => {
     event.preventDefault();
+
+    const names = persons.map((person) => person.name);
+
+    if (names.includes(newName)) {
+      alert(`${newName} is already added to phonebook`);
+      return;
+    }
+
     const newPerson = { name: newName };
 
     setPersons(persons.concat(newPerson));
@@ -36,4 +44,3 @@ const App = () => {
 };
 
 export default App;
-
