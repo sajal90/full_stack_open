@@ -92,24 +92,23 @@ const App = () => {
           .then((res) => {
             console.log(res);
             setPersons(
-              persons.map((person) => person.name === newPerson ? res : person),
+              persons.map((person) => person.name === newName ? res : person),
             );
 
             setNewName("");
             setNewNumber("");
           });
       }
-      return;
+    } else {
+      personService
+        .create(newPerson)
+        .then((response) => {
+          setPersons(persons.concat(response));
+        });
+
+      setNewName("");
+      setNewNumber("");
     }
-
-    personService
-      .create(newPerson)
-      .then((response) => {
-        setPersons(persons.concat(response));
-      });
-
-    setNewName("");
-    setNewNumber("");
   };
 
   const handleDelete = (id) => {
@@ -119,7 +118,7 @@ const App = () => {
       personService
         .remove(id)
         .then((res) => {
-          console.log(res);
+          setPersons(persons.filter((per) => per.id !== res.id));
         });
     }
   };
