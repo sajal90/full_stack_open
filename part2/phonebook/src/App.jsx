@@ -26,11 +26,16 @@ const PersonForm = (props) => {
   );
 };
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, handleDelete }) => {
   return (
     <div>
       {persons.map((person) => (
-        <p key={person.id}>{person.name} {person.number}</p>
+        <p key={person.id}>
+          {person.name} {person.number}
+          <button type="button" onClick={() => handleDelete(person.id)}>
+            delete
+          </button>
+        </p>
       ))}
     </div>
   );
@@ -69,16 +74,33 @@ const App = () => {
     }
 
     const names = persons.map((person) => person.name);
-
-    if (names.includes(newName)) {
-      alert(`${newName} is already added to phonebook`);
-      return;
-    }
-
     const newPerson = {
       name: newName,
       number: newNumber,
     };
+
+    if (names.includes(newName)) {
+      const rep = window.confirm(
+        `${newName} is already added to phonebook , replace the old number with a new one`,
+      );
+
+      const existingPerson = persons.find((person) => person.name === newName);
+
+      if (rep) {
+        personService
+          .update(existingPerson.id, newPerson)
+          .then((res) => {
+            console.log(res);
+            setPersons(
+              persons.map((person) => person.name === newPerson ? res : person),
+            );
+
+            setNewName("");
+            setNewNumber("");
+          });
+      }
+      return;
+    }
 
     personService
       .create(newPerson)
@@ -88,6 +110,18 @@ const App = () => {
 
     setNewName("");
     setNewNumber("");
+  };
+
+  const handleDelete = (id) => {
+    const personToDel = persons.find((p) => p.id === id);
+
+    if (window.confirm(`Delete ${personToDel.name}`)) {
+      personService
+        .remove(id)
+        .then((res) => {
+          console.log(res);
+        });
+    }
   };
 
   const handleFilter = (event) => {
@@ -107,7 +141,7 @@ const App = () => {
         handleNumChange={handleNumChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} handleDelete={handleDelete} />
     </div>
   );
 };
