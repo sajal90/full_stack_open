@@ -1,51 +1,16 @@
 import { useEffect, useState } from "react";
 import personService from "./services/persons.js";
-
-const Filter = ({ filter, handle }) => {
-  return (
-    <p>
-      filter shown with <input value={filter} onChange={handle} />
-    </p>
-  );
-};
-
-const PersonForm = (props) => {
-  return (
-    <form onSubmit={props.handleSumbit}>
-      <div>
-        name: <input value={props.newName} onChange={props.handleNameChange} />
-      </div>
-      <div>
-        number:{" "}
-        <input value={props.newNumber} onChange={props.handleNumChange} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  );
-};
-
-const Persons = ({ persons, handleDelete }) => {
-  return (
-    <div>
-      {persons.map((person) => (
-        <p key={person.id}>
-          {person.name} {person.number}
-          <button type="button" onClick={() => handleDelete(person.id)}>
-            delete
-          </button>
-        </p>
-      ))}
-    </div>
-  );
-};
+import Persons from "./components/Persons.jsx";
+import Filter from "./components/Filter.jsx";
+import PersonForm from "./components/PersonForm.jsx";
+import Notification from "./components/Notification.jsx";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [notifyMessage, setNotifyMessage] = useState(null);
 
   useEffect(() => {
     personService
@@ -103,6 +68,10 @@ const App = () => {
       personService
         .create(newPerson)
         .then((response) => {
+          setNotifyMessage(`Added ${newName}`);
+          setTimeout(() => {
+            setNotifyMessage(null);
+          }, 5000);
           setPersons(persons.concat(response));
         });
 
@@ -118,6 +87,10 @@ const App = () => {
       personService
         .remove(id)
         .then((res) => {
+          setNotifyMessage(`Deleted ${personToDel.name}`);
+          setTimeout(() => {
+            setNotifyMessage(null);
+          }, 5000);
           setPersons(persons.filter((per) => per.id !== res.id));
         });
     }
@@ -130,6 +103,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notifyMessage} />
       <Filter filter={filter} handle={handleFilter} />
       <h2>add a new</h2>
       <PersonForm
