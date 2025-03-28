@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
   const [notifyMessage, setNotifyMessage] = useState(null);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     personService
@@ -55,19 +56,28 @@ const App = () => {
         personService
           .update(existingPerson.id, newPerson)
           .then((res) => {
-            console.log(res);
             setPersons(
               persons.map((person) => person.name === newName ? res : person),
             );
-
             setNewName("");
             setNewNumber("");
+          })
+          .catch((error) => {
+            setIsError(true);
+            setNotifyMessage(
+              `Information of ${newName} is already removed from the server`,
+            );
+            setTimeout(() => {
+              setNotifyMessage(null);
+            }, 5000);
+            setPersons(persons.filter((p) => p.name != newName));
           });
       }
     } else {
       personService
         .create(newPerson)
         .then((response) => {
+          setIsError(false);
           setNotifyMessage(`Added ${newName}`);
           setTimeout(() => {
             setNotifyMessage(null);
@@ -87,6 +97,7 @@ const App = () => {
       personService
         .remove(id)
         .then((res) => {
+          setIsError(false);
           setNotifyMessage(`Deleted ${personToDel.name}`);
           setTimeout(() => {
             setNotifyMessage(null);
@@ -103,7 +114,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notifyMessage} />
+      <Notification message={notifyMessage} isError={isError} />
       <Filter filter={filter} handle={handleFilter} />
       <h2>add a new</h2>
       <PersonForm
