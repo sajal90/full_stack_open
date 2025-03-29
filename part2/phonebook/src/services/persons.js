@@ -6,7 +6,6 @@ const getAll = () => {
 	const req = axios.get(baseUrl);
 	return req.then((res) => res.data);
 };
-
 const create = (value) => {
 	const req = axios.post(baseUrl, value);
 	return req.then((res) => res.data);
