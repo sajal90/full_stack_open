@@ -46,7 +46,7 @@ app.get("/api/persons/:id", (request, response) => {
 	if (person) {
 		response.json(person);
 	} else {
-		response.status(404);
+		response.status(404).end();
 	}
 });
 
