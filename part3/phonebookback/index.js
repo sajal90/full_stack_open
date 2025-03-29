@@ -26,12 +26,16 @@ const persons = [
 	},
 ];
 
-app.get("/", (request, response) => {
-	response.send("<h1>Hello world</h1>");
-});
-
 app.get("/api/persons", (request, response) => {
 	response.json(persons);
+});
+
+app.get("/api/info", (request, response) => {
+	const date = new Date();
+	let data = `<p>Phonebook has info for ${persons.length} people</p>`;
+	data += `<p>${date.toString()}</p>`;
+
+	response.send(data);
 });
 
 const PORT = 3001;
