@@ -68,6 +68,11 @@ app.post("/api/persons", (request, response) => {
 		return response.status(400).json({ error: "content missing" });
 	}
 
+	const isDup = persons.find((p) => p.name === data.name);
+	if (isDup) {
+		return response.status(400).json({ error: "duplicate entry" });
+	}
+
 	const person = {
 		name: data.name,
 		number: data.number,
@@ -75,7 +80,7 @@ app.post("/api/persons", (request, response) => {
 	};
 
 	persons = persons.concat(person);
-	console.log(person);
+	//	console.log(person);
 
 	response.status(201).json(person);
 });
