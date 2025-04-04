@@ -83,6 +83,13 @@ const App = () => {
             setNotifyMessage(null);
           }, 5000);
           setPersons(persons.concat(response));
+        })
+        .catch((error) => {
+          setIsError(true);
+          setNotifyMessage(error.response.data.error);
+          setTimeout(() => {
+            setNotifyMessage(null);
+          }, 5000);
         });
 
       setNewName("");
