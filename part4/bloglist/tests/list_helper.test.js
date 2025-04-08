@@ -3,6 +3,7 @@ const assert = require("node:assert");
 
 const dummy = require("../utils/list_helper.js").dummy;
 const totalLikes = require("../utils/list_helper.js").totalLikes;
+const favoriteBlog = require("../utils/list_helper.js").favoriteBlog;
 
 describe("dummy", () => {
 	test("dummy returns one", () => {
@@ -67,18 +68,18 @@ const blogs = [
 	},
 ];
 
-describe("totalLikes", () => {
-	const listWithOneBlog = [
-		{
-			_id: "5a422aa71b54a676234d17f8",
-			title: "Go To Statement Considered Harmful",
-			author: "Edsger W. Dijkstra",
-			url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
-			likes: 5,
-			__v: 0,
-		},
-	];
+const listWithOneBlog = [
+	{
+		_id: "5a422aa71b54a676234d17f8",
+		title: "Go To Statement Considered Harmful",
+		author: "Edsger W. Dijkstra",
+		url: "https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf",
+		likes: 5,
+		__v: 0,
+	},
+];
 
+describe("totalLikes", () => {
 	test("List with zero blog", () => {
 		const res = totalLikes([]);
 		assert.strictEqual(res, 0);
@@ -92,5 +93,21 @@ describe("totalLikes", () => {
 	test("List with several blogs", () => {
 		const res = totalLikes(blogs);
 		assert.strictEqual(res, 36);
+	});
+});
+
+describe("Favorite Blog", () => {
+	test("List with zero blog", () => {
+		assert.deepStrictEqual(favoriteBlog([]), {});
+	});
+
+	test("List with one blog", () => {
+		const res = favoriteBlog(listWithOneBlog);
+		assert.deepStrictEqual(res, listWithOneBlog[0]);
+	});
+
+	test("List with multiple blogs", () => {
+		const res = favoriteBlog(blogs);
+		assert.deepStrictEqual(res, blogs[2]);
 	});
 });
