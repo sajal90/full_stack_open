@@ -4,6 +4,8 @@ const assert = require("node:assert");
 const dummy = require("../utils/list_helper.js").dummy;
 const totalLikes = require("../utils/list_helper.js").totalLikes;
 const favoriteBlog = require("../utils/list_helper.js").favoriteBlog;
+const mostBlogs = require("../utils/list_helper.js").mostBlogs;
+const mostLikes = require("../utils/list_helper.js").mostLikes;
 
 describe("dummy", () => {
 	test("dummy returns one", () => {
@@ -98,7 +100,7 @@ describe("totalLikes", () => {
 
 describe("Favorite Blog", () => {
 	test("List with zero blog", () => {
-		assert.deepStrictEqual(favoriteBlog([]), {});
+		assert.deepStrictEqual(favoriteBlog([]), null);
 	});
 
 	test("List with one blog", () => {
@@ -109,5 +111,51 @@ describe("Favorite Blog", () => {
 	test("List with multiple blogs", () => {
 		const res = favoriteBlog(blogs);
 		assert.deepStrictEqual(res, blogs[2]);
+	});
+});
+
+describe("most blogs", () => {
+	test("List with zero blog", () => {
+		assert.deepStrictEqual(mostBlogs([]), {});
+	});
+
+	test("List with one blog", () => {
+		const answer = {
+			author: "Edsger W. Dijkstra",
+			blogs: 1,
+		};
+		assert.deepStrictEqual(mostBlogs(listWithOneBlog), answer);
+	});
+
+	test("List with multiple Blogs", () => {
+		const result = mostBlogs(blogs);
+		const answer = {
+			author: "Robert C. Martin",
+			blogs: 3,
+		};
+		assert.deepStrictEqual(result, answer);
+	});
+});
+
+describe("most likes", () => {
+	test("List with zero blog", () => {
+		assert.deepStrictEqual(mostLikes([]), {});
+	});
+
+	test("List with one blog", () => {
+		const answer = {
+			author: "Edsger W. Dijkstra",
+			likes: 5,
+		};
+		assert.deepStrictEqual(mostLikes(listWithOneBlog), answer);
+	});
+
+	test("List with multiple Blogs", () => {
+		const result = mostLikes(blogs);
+		const answer = {
+			author: "Edsger W. Dijkstra",
+			likes: 17,
+		};
+		assert.deepStrictEqual(result, answer);
 	});
 });
