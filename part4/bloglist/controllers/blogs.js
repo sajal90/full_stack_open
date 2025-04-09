@@ -20,7 +20,7 @@ blogRouter.post("/", (request, response, next) => {
 
 	blog.save()
 		.then((blog) => {
-			response.json(blog);
+			response.status(201).json(blog);
 		})
 		.catch((error) => next(error));
 });

@@ -6,9 +6,12 @@ const middleware = require("./utils/middleware.js");
 const blogRouter = require("./controllers/blogs.js");
 
 const app = express();
+const MONGODB_URI = process.env.NODE_ENV === "test"
+	? process.env.TEST_MONGODB_URI
+	: process.env.MONGODB_URI;
 
 mongoose
-	.connect(config.MONGODB_URI)
+	.connect(MONGODB_URI)
 	.then(() => {
 		logger.info("mongodb connected");
 	})
