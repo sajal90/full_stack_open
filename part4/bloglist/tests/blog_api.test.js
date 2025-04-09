@@ -63,7 +63,7 @@ const initialBlogs = [
 
 test("Amount of blogs", async () => {
 	const response = await api.get("/api/blogs")
-		.expect(201);
+		.expect(200);
 
 	console.log(response.body);
 
