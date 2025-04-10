@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require("node:test");
+const { test, after, beforeEach, describe } = require("node:test");
 const assert = require("node:assert");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
@@ -61,14 +61,22 @@ const initialBlogs = [
 	},
 ];
 
-test("Amount of blogs", async () => {
-	const response = await api.get("/api/blogs")
-		.expect(200)
-		.expect("content-type", /application\/json/);
+describe("blog api tests", () => {
+	test("Amount of blogs", async () => {
+		const response = await api.get("/api/blogs")
+			.expect(200)
+			.expect("content-type", /application\/json/);
 
-	console.log(response.body);
+		console.log(response.body);
 
-	assert.strictEqual(response.body.length, initialBlogs.length);
+		assert.strictEqual(response.body.length, initialBlogs.length);
+	});
+
+	test("unique identifer is named id", async () => {
+		const response = await api.get("/api/blogs");
+
+		assert(response.body[0].hasOwnProperty("id"));
+	});
 });
 
 beforeEach(async () => {
