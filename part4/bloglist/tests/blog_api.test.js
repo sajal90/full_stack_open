@@ -92,6 +92,20 @@ describe("blog api tests", () => {
 
 		assert.strictEqual(response.body.length, initialBlogs.length + 1);
 	});
+
+	test("default to zero likes", async () => {
+		const newBlog = {
+			title: "New Blog",
+			author: "Sajal Gupta",
+			url: "https://mooc.fi/",
+		};
+
+		const response = await api.post("/api/blogs").send(newBlog);
+
+		console.log(response.body);
+
+		assert.strictEqual(response.body.likes, 0);
+	});
 });
 
 beforeEach(async () => {
