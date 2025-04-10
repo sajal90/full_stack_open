@@ -136,6 +136,21 @@ describe("blog api tests", () => {
 
 		assert.strictEqual(response.body.length, initialBlogs.length - 1);
 	});
+
+	test("blog is updated", async () => {
+		const id = initialBlogs[0]._id;
+		let updatedBlog = initialBlogs[0];
+		updatedBlog.likes += 1;
+		console.log(updatedBlog);
+
+		await api.put(`/api/blogs/${id}`)
+			.send(updatedBlog);
+
+		const response = await api.get(`/api/blogs/${id}`);
+		console.log(response.body);
+
+		assert.strictEqual(updatedBlog.likes, response.body.likes);
+	});
 });
 
 beforeEach(async () => {
