@@ -77,6 +77,21 @@ describe("blog api tests", () => {
 
 		assert(response.body[0].hasOwnProperty("id"));
 	});
+
+	test("post req", async () => {
+		const newBlog = {
+			title: "New Blog",
+			author: "Sajal gupta",
+			url: "https://google.com",
+			likes: 90,
+		};
+
+		await api.post("/api/blogs").send(newBlog);
+
+		const response = await api.get("/api/blogs");
+
+		assert.strictEqual(response.body.length, initialBlogs.length + 1);
+	});
 });
 
 beforeEach(async () => {
