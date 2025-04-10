@@ -63,7 +63,8 @@ const initialBlogs = [
 
 test("Amount of blogs", async () => {
 	const response = await api.get("/api/blogs")
-		.expect(200);
+		.expect(200)
+		.expect("content-type", /application\/json/);
 
 	console.log(response.body);
 
