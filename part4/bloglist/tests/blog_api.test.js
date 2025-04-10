@@ -126,6 +126,16 @@ describe("blog api tests", () => {
 			.send(missingTitle)
 			.expect(400);
 	});
+
+	test("blog is deleted", async () => {
+		const id = initialBlogs[0]._id;
+		await api.delete(`/api/blogs/${id}`)
+			.expect(204);
+
+		const response = await api.get("/api/blogs");
+
+		assert.strictEqual(response.body.length, initialBlogs.length - 1);
+	});
 });
 
 beforeEach(async () => {
