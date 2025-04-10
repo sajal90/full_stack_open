@@ -15,6 +15,10 @@ const unknownEndpoint = (request, response) => {
 const errorHandler = (error, request, response, next) => {
 	logger.error(error);
 
+	if (error.name === "ValidationError") {
+		response.status(400).send({ error: "Content missing" });
+	}
+
 	next(error);
 };
 

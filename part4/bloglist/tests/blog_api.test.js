@@ -106,6 +106,26 @@ describe("blog api tests", () => {
 
 		assert.strictEqual(response.body.likes, 0);
 	});
+
+	test("missing title or url", async () => {
+		const missingUrl = {
+			title: "New",
+			author: "Me",
+		};
+
+		await api.post("/api/blogs")
+			.send(missingUrl)
+			.expect(400);
+
+		const missingTitle = {
+			author: "me",
+			url: "example.com",
+		};
+
+		await api.post("/api/blogs")
+			.send(missingTitle)
+			.expect(400);
+	});
 });
 
 beforeEach(async () => {
