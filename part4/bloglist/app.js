@@ -5,6 +5,7 @@ require("express-async-errors");
 const logger = require("./utils/logger.js");
 const middleware = require("./utils/middleware.js");
 const blogRouter = require("./controllers/blogs.js");
+const userRouter = require("./controllers/users.js");
 
 const app = express();
 const MONGODB_URI = process.env.NODE_ENV === "production"
@@ -23,6 +24,7 @@ mongoose
 app.use(express.json());
 app.use(middleware.requestLogger);
 app.use("/api/blogs", blogRouter);
+app.use("/api/users", userRouter);
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
