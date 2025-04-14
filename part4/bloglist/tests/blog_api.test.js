@@ -67,8 +67,6 @@ describe("blog api tests", () => {
 			.expect(200)
 			.expect("content-type", /application\/json/);
 
-		console.log(response.body);
-
 		assert.strictEqual(response.body.length, initialBlogs.length);
 	});
 
@@ -101,8 +99,6 @@ describe("blog api tests", () => {
 		};
 
 		const response = await api.post("/api/blogs").send(newBlog);
-
-		console.log(response.body);
 
 		assert.strictEqual(response.body.likes, 0);
 	});
@@ -141,13 +137,11 @@ describe("blog api tests", () => {
 		const id = initialBlogs[0]._id;
 		let updatedBlog = initialBlogs[0];
 		updatedBlog.likes += 1;
-		console.log(updatedBlog);
 
 		await api.put(`/api/blogs/${id}`)
 			.send(updatedBlog);
 
 		const response = await api.get(`/api/blogs/${id}`);
-		console.log(response.body);
 
 		assert.strictEqual(updatedBlog.likes, response.body.likes);
 	});

@@ -10,6 +10,12 @@ userRouter.get("/", async (request, response) => {
 userRouter.post("/", async (request, response) => {
 	const body = request.body;
 
+	if (!body.password || body.password.length < 3) {
+		return response.status(400).send({
+			error: "Password length should be greater than 3",
+		});
+	}
+
 	const saltRounds = 10;
 	const passwordHash = await bcrypt.hash(body.password, saltRounds);
 
