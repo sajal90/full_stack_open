@@ -13,9 +13,10 @@ const unknownEndpoint = (request, response) => {
 };
 
 const tokenExtractor = (request, response, next) => {
-	console.log(request);
 	const auth = request.get("authorization");
-	request.token = auth.replace("Beaver ", "");
+	if (auth && auth.startsWith("Beaver ")) {
+		request.token = auth.replace("Beaver ", "");
+	}
 	next();
 };
 
