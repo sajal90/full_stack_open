@@ -12,6 +12,13 @@ const unknownEndpoint = (request, response) => {
 	response.status(404).end();
 };
 
+const tokenExtractor = (request, response, next) => {
+	console.log(request);
+	const auth = request.get("authorization");
+	request.token = auth.replace("Beaver ", "");
+	next();
+};
+
 const errorHandler = (error, request, response, next) => {
 	logger.error(error);
 
@@ -31,4 +38,9 @@ const errorHandler = (error, request, response, next) => {
 	next(error);
 };
 
-module.exports = { requestLogger, unknownEndpoint, errorHandler };
+module.exports = {
+	requestLogger,
+	unknownEndpoint,
+	tokenExtractor,
+	errorHandler,
+};
