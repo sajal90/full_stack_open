@@ -36,10 +36,22 @@ blogRouter.post("/", async (request, response) => {
 	});
 
 	const savedBlog = await blog.save();
+	user.blogs = user.blogs.concat(savedBlog);
+	await user.save();
 	response.status(201).json(savedBlog);
 });
 
 blogRouter.delete("/:id", async (request, response) => {
+	const decodedToken = jwt.verify(request.token, process.env.SECRET);
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: "invalid token" });
+	}
+	const userid = decodedToken.id;
+	const blog = await Blog.findById(request.params.id);
+
+	if (userid.toString() !== blog.user.toString()) {
+		return response.status(401).json({ error: "token mismatch" });
+	}
 	await Blog.findByIdAndDelete(request.params.id);
 	response.status(204).end();
 });
