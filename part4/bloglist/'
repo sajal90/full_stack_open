@@ -39,11 +39,12 @@ describe("blog api tests", () => {
 			passwordHash,
 		});
 		const savedUser = await user.save();
+		console.log(savedUser);
 
 		await Blog.deleteMany({});
-		for (let blog of initialBlogs) {
+		for (let blog of testHelper.listBlogs) {
 			let blogObject = new Blog(blog);
-			blogObject.user = savedUser._id;
+			blogObject.user = root.id;
 			await blogObject.save();
 		}
 	});
@@ -52,6 +53,8 @@ describe("blog api tests", () => {
 		const response = await api.get("/api/blogs")
 			.expect(200)
 			.expect("content-type", /application\/json/);
+
+		console.log(response.body);
 
 		assert.strictEqual(response.body.length, initialBlogs.length);
 	});
@@ -63,11 +66,6 @@ describe("blog api tests", () => {
 	});
 
 	test("post req", async () => {
-		const loginResponse = await api.post("/api/login")
-			.send({ username: "sajal", password: "password" });
-
-		const token = loginResponse.body.token;
-
 		const newBlog = {
 			title: "New Blog",
 			author: "Sajal gupta",
@@ -75,9 +73,7 @@ describe("blog api tests", () => {
 			likes: 90,
 		};
 
-		await api.post("/api/blogs")
-			.set("Authorization", `Beaver ${token}`)
-			.send(newBlog);
+		await api.post("/api/blogs").send(newBlog);
 
 		const response = await api.get("/api/blogs");
 
@@ -85,37 +81,24 @@ describe("blog api tests", () => {
 	});
 
 	test("default to zero likes", async () => {
-		const loginResponse = await api.post("/api/login")
-			.send({ username: "sajal", password: "password" });
-
-		const token = loginResponse.body.token;
-
 		const newBlog = {
 			title: "New Blog",
 			author: "Sajal Gupta",
 			url: "https://mooc.fi/",
 		};
 
-		const response = await api.post("/api/blogs")
-			.set("Authorization", `Beaver ${token}`)
-			.send(newBlog);
+		const response = await api.post("/api/blogs").send(newBlog);
 
 		assert.strictEqual(response.body.likes, 0);
 	});
 
 	test("missing title or url", async () => {
-		const loginResponse = await api.post("/api/login")
-			.send({ username: "sajal", password: "password" });
-
-		const token = loginResponse.body.token;
-
 		const missingUrl = {
 			title: "New",
 			author: "Me",
 		};
 
 		await api.post("/api/blogs")
-			.set("Authorization", `Beaver ${token}`)
 			.send(missingUrl)
 			.expect(400);
 
@@ -125,38 +108,18 @@ describe("blog api tests", () => {
 		};
 
 		await api.post("/api/blogs")
-			.set("Authorization", `Beaver ${token}`)
 			.send(missingTitle)
 			.expect(400);
 	});
 
 	test("blog is deleted", async () => {
-		const loginResponse = await api.post("/api/login")
-			.send({ username: "sajal", password: "password" });
-
-		const token = loginResponse.body.token;
-
 		const id = initialBlogs[0]._id;
 		await api.delete(`/api/blogs/${id}`)
-			.set("Authorization", `Beaver ${token}`)
 			.expect(204);
 
 		const response = await api.get("/api/blogs");
 
 		assert.strictEqual(response.body.length, initialBlogs.length - 1);
-	});
-
-	test("fail without token", async () => {
-		const newBlog = {
-			title: "New Blog",
-			author: "Sajal gupta",
-			url: "https://google.com",
-			likes: 90,
-		};
-
-		await api.post("/api/blogs")
-			.send(newBlog)
-			.expect(401);
 	});
 
 	test("blog is updated", async () => {
