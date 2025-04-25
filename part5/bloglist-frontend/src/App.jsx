@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Blog from "./components/Blog.jsx";
+import Notification from "./components/Notification.jsx";
 import blogService from "./services/blogs.js";
 import loginService from "./services/login.js";
 
@@ -11,6 +12,8 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+  const [noti, setNoti] = useState("");
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -36,8 +39,19 @@ const App = () => {
       setTitle("");
       setAuthor("");
       setUrl("");
+
+      setIsError(false);
+      setNoti(`A new Blog ${blog.title} by ${blog.author} added`);
+      setTimeout(() => {
+        setNoti("");
+      }, 5000);
     } catch (error) {
-      console.log(error);
+      setIsError(true);
+      setNoti(error.response.data.error);
+
+      setTimeout(() => {
+        setNoti("");
+      }, 5000);
     }
   };
 
@@ -52,7 +66,12 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (error) {
-      console.log(error);
+      setIsError(true);
+      setNoti(error.response.data.error);
+
+      setTimeout(() => {
+        setNoti("");
+      }, 5000);
     }
   };
 
@@ -60,6 +79,7 @@ const App = () => {
     return (
       <div>
         <h1>log in to application</h1>
+        <Notification isError={isError} message={noti} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -81,9 +101,11 @@ const App = () => {
       </div>
     );
   }
+
   return (
     <div>
       <h2>blogs</h2>
+      <Notification isError={isError} message={noti} />
       <p>
         {user.name} logged in
         <button
