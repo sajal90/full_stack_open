@@ -50,6 +50,27 @@ const App = () => {
     }
   };
 
+  const handleLike = async (blog) => {
+    const newBlog = {
+      author: blog.author,
+      likes: blog.likes + 1,
+      url: blog.url,
+      title: blog.title,
+      user: blog.user.id,
+    };
+
+    try {
+      const updatedBlog = await blogService.update(blog.id, newBlog);
+
+      const newBlogs = blogs.map((b) =>
+        b.id == updatedBlog.id ? updatedBlog : b
+      );
+      setBlogs(newBlogs);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -115,7 +136,9 @@ const App = () => {
           handleBlogCreate={handleBlogCreate}
         />
       </Togglable>
-      {blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+      {blogs.map((blog) => (
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+      ))}
     </div>
   );
 };
