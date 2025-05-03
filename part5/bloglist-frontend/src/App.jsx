@@ -16,7 +16,10 @@ const App = () => {
   const togglableRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => {
+      const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+      setBlogs(sortedBlogs);
+    });
   }, []);
 
   useEffect(() => {
@@ -65,6 +68,7 @@ const App = () => {
       const newBlogs = blogs.map((b) =>
         b.id == updatedBlog.id ? updatedBlog : b
       );
+      newBlogs.sort((a, b) => b.likes - a.likes);
       setBlogs(newBlogs);
     } catch (e) {
       console.log(e);
