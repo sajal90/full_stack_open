@@ -3,6 +3,8 @@ import Blog from "./components/Blog.jsx";
 import Notification from "./components/Notification.jsx";
 import blogService from "./services/blogs.js";
 import loginService from "./services/login.js";
+import Togglabe from "./components/Togglable.jsx";
+import BlogForm from "./components/BlogForm.jsx";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -53,6 +55,18 @@ const App = () => {
         setNoti("");
       }, 5000);
     }
+  };
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value);
+  };
+
+  const handleUrlChange = (event) => {
+    setTitle(event.target.value);
   };
 
   const handleLogin = async (event) => {
@@ -115,31 +129,17 @@ const App = () => {
           logout
         </button>
       </p>
-      <h1>create new</h1>
-      <form onSubmit={handleBlogCreate}>
-        <div>
-          title:
-          <input
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-            value={author}
-            onChange={(event) => setAuthor(event.target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            value={url}
-            onChange={(event) => setUrl(event.target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
+      <Togglabe>
+        <BlogForm
+          handleBlogCreate={handleBlogCreate}
+          title={title}
+          handleTitleChange={handleTitleChange}
+          author={author}
+          handleAuthorChange={handleAuthorChange}
+          url={url}
+          handleUrlChange={handleUrlChange}
+        />
+      </Togglabe>
       {blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
     </div>
   );
