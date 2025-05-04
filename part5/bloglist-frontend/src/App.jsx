@@ -66,7 +66,7 @@ const App = () => {
       const updatedBlog = await blogService.update(blog.id, newBlog);
 
       const newBlogs = blogs.map((b) =>
-        b.id == updatedBlog.id ? updatedBlog : b
+        b.id === updatedBlog.id ? updatedBlog : b
       );
       newBlogs.sort((a, b) => b.likes - a.likes);
       setBlogs(newBlogs);
@@ -86,7 +86,7 @@ const App = () => {
 
     try {
       await blogService.remove(blog.id);
-      const newBlogs = blogs.filter((b) => b.id != blog.id);
+      const newBlogs = blogs.filter((b) => b.id !== blog.id);
       setBlogs(newBlogs);
     } catch (error) {
       console.log(error);
