@@ -75,6 +75,24 @@ const App = () => {
     }
   };
 
+  const handleRemove = async (blog) => {
+    const confirmRemove = window.confirm(
+      `Remove Blog ${blog.title} by ${blog.author}`,
+    );
+
+    if (!confirmRemove) {
+      return;
+    }
+
+    try {
+      await blogService.remove(blog.id);
+      const newBlogs = blogs.filter((b) => b.id != blog.id);
+      setBlogs(newBlogs);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -141,7 +159,13 @@ const App = () => {
         />
       </Togglable>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          handleLike={handleLike}
+          handleRemove={handleRemove}
+          user={user}
+        />
       ))}
     </div>
   );
