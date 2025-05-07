@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Blog from "./Blog.jsx";
-import { expect } from "chai";
+import BlogForm from "./BlogForm.jsx";
 
 test("blog renders title author", () => {
   const blog = {
@@ -77,4 +77,27 @@ test("likes is clicked twice", async () => {
   await clicker.click(likeButton);
 
   expect(mockHandler.mock.calls).toHaveLength(2);
+});
+
+test("blogForm works as expected", async () => {
+  const mockHandler = vi.fn();
+  render(<BlogForm handleBlogCreate={mockHandler} />);
+
+  const user = userEvent.setup();
+
+  const input = screen.getAllByRole("textbox");
+  const createButton = screen.getByText("create");
+
+  await user.type(input[0], "this is a new blog");
+  await user.type(input[1], "this is author");
+  await user.type(input[2], "this is url");
+
+  await user.click(createButton);
+  screen.debug();
+  console.log(mockHandler.mock.calls);
+
+  expect(mockHandler.mock.calls).toHaveLength(1);
+  expect(mockHandler.mock.calls[0][0].title).toBe("this is a new blog");
+  expect(mockHandler.mock.calls[0][0].author).toBe("this is author");
+  expect(mockHandler.mock.calls[0][0].url).toBe("this is url");
 });
