@@ -46,3 +46,35 @@ test("url and likes shown on click", async () => {
   expect(div).toHaveTextContent("https://example.com");
   expect(div).toHaveTextContent(37);
 });
+
+test("likes is clicked twice", async () => {
+  const user = {
+    name: "denji",
+    username: "dennis",
+  };
+
+  const blog = {
+    title: "this is a blog",
+    author: "me",
+    url: "https://example.com",
+    likes: 37,
+    user: {
+      name: "denji",
+      username: "dennis",
+    },
+  };
+
+  const mockHandler = vi.fn();
+
+  render(<Blog blog={blog} user={user} handleLike={mockHandler} />);
+
+  const viewButton = screen.getByText("view");
+  const clicker = userEvent.setup();
+  await clicker.click(viewButton);
+
+  const likeButton = screen.getByText("like");
+  await clicker.click(likeButton);
+  await clicker.click(likeButton);
+
+  expect(mockHandler.mock.calls).toHaveLength(2);
+});
