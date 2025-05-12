@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const blogRouter = require("express").Router();
 const Blog = require("../models/blog.js");
 const User = require("../models/user.js");
+const mongoose = require("mongoose");
 
 blogRouter.get("/", async (request, response) => {
 	const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
@@ -27,8 +28,9 @@ blogRouter.post("/", async (request, response) => {
 		author: body.author,
 		url: body.url,
 		likes: body.likes,
-		user: user._id,
+		user: new mongoose.Types.ObjectId(`${user._id}`),
 	});
+	blog.populate("user", { username: 1, name: 1 });
 
 	const savedBlog = await blog.save();
 	user.blogs = user.blogs.concat(savedBlog);
@@ -51,7 +53,7 @@ blogRouter.put("/:id", async (request, response) => {
 	const body = request.body;
 
 	const blog = {
-		user: body.user,
+		user: body.user.id,
 		title: body.title,
 		author: body.author,
 		url: body.url,
@@ -60,7 +62,7 @@ blogRouter.put("/:id", async (request, response) => {
 
 	const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
 		new: true,
-	});
+	}).populate("user", { username: 1, name: 1 });
 	response.json(updatedBlog);
 });
 
