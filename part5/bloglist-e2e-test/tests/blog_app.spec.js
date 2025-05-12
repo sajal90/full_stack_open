@@ -60,5 +60,14 @@ describe("Blog app", () => {
 
       await expect(page.getByText("likes 1")).toBeVisible();
     });
+
+    test("user can delete a blog", async ({ page }) => {
+      page.on("dialog", (dialog) => dialog.accept());
+      await page.getByRole("button", { name: "view" }).click();
+      await page.getByRole("button", { name: "remove" }).click();
+
+      await expect(page.getByText("archlinux best distro sajal")).not
+        .toBeVisible();
+    });
   });
 });
