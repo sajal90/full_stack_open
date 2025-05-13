@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
-import { createBlog, loginWith } from "./helper.js";
+import { createBlog, likeBlog, loginWith } from "./helper.js";
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
@@ -85,6 +85,30 @@ describe("Blog app", () => {
 
       await page.getByRole("button", { name: "view" }).click();
       await expect(page.getByText("remove")).not.toBeVisible();
+    });
+
+    test("blogs are sorted by likes", async ({ page }) => {
+      await createBlog(page, "third", "sajal", "http");
+      await createBlog(page, "first", "sajal", "http");
+      await createBlog(page, "second", "sajal", "http");
+      await page.waitForTimeout(200);
+
+      await likeBlog(page, "third sajal", 1);
+      await likeBlog(page, "first sajal", 3);
+      await likeBlog(page, "second sajal", 2);
+
+      const expectedOrder = [
+        "first sajal",
+        "second sajal",
+        "third sajal",
+      ];
+
+      const elemts = page.getByTestId("blog");
+      console.log(elemts);
+
+      for (let i = 0; i < expectedOrder.length; i++) {
+        await expect(elemts.nth(i)).toContainText(expectedOrder[i]);
+      }
     });
   });
 });

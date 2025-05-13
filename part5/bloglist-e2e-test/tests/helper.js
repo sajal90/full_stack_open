@@ -12,4 +12,16 @@ const createBlog = async (page, title, author, url) => {
   await page.getByRole("button", { name: "create" }).click();
 };
 
-export { createBlog, loginWith };
+const likeBlog = async (page, title, times) => {
+  const blog = page.getByText(title);
+  const blogLocator = blog.locator("..");
+
+  await blog.getByRole("button", { name: "view" }).click();
+
+  for (let i = 0; i < times; i++) {
+    await blogLocator.getByRole("button", { name: "like" }).click();
+    await page.waitForTimeout(500);
+  }
+};
+
+export { createBlog, likeBlog, loginWith };
