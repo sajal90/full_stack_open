@@ -25,9 +25,10 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "VOTE": {
       const id = action.payload.id;
-      const votedAnec = state.find((a) => a.id == id);
+      const votedAnec = state.find((a) => a.id === id);
       const changedAnec = { ...votedAnec, votes: votedAnec.votes + 1 };
-      return state.map((s) => s.id === id ? changedAnec : s);
+      const newState = state.map((s) => s.id === id ? changedAnec : s);
+      return [...newState].sort((a, b) => b.votes - a.votes);
     }
     case "NEW_ANEC":
       return state.concat({ ...action.payload, id: getId() });
@@ -37,4 +38,3 @@ const reducer = (state = initialState, action) => {
 };
 
 export default reducer;
-
