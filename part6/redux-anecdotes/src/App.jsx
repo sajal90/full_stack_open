@@ -1,32 +1,20 @@
 import { useDispatch, useSelector } from "react-redux";
+import { createAnec, voteAnec } from "./reducers/anecdoteReducer.js";
 
 const App = () => {
   const anecdotes = useSelector((state) => state);
   const dispatch = useDispatch();
 
-  const createAnec = (event) => {
+  const addAnec = (event) => {
     event.preventDefault();
-    const newAnec = {
-      type: "NEW_ANEC",
-      payload: {
-        content: event.target.anec.value,
-        votes: 0,
-      },
-    };
+    const content = event.target.anec.value;
+    event.target.anec.value = "";
 
-    dispatch(newAnec);
+    dispatch(createAnec(content));
   };
 
   const vote = (id) => {
-    const votedAnec = {
-      type: "VOTE",
-      payload: {
-        id: id,
-      },
-    };
-    dispatch(
-      votedAnec,
-    );
+    dispatch(voteAnec(id));
   };
 
   return (
@@ -44,7 +32,7 @@ const App = () => {
         </div>
       ))}
       <h2>create new</h2>
-      <form onSubmit={createAnec}>
+      <form onSubmit={addAnec}>
         <div>
           <input name="anec" />
         </div>
@@ -55,4 +43,3 @@ const App = () => {
 };
 
 export default App;
-

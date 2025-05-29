@@ -37,4 +37,24 @@ const reducer = (state = initialState, action) => {
   }
 };
 
+export const createAnec = (content) => {
+  return {
+    type: "NEW_ANEC",
+    payload: {
+      content,
+      votes: 0,
+      id: getId(),
+    },
+  };
+};
+
+export const voteAnec = (id) => {
+  return {
+    type: "VOTE",
+    payload: {
+      id,
+    },
+  };
+};
+
 export default reducer;
