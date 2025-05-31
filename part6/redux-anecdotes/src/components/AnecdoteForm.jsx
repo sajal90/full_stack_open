@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { createAnec } from "../reducers/anecdoteReducer.js";
+import { changeNoti } from "../reducers/notificationReducer.js";
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
@@ -10,6 +11,11 @@ const AnecdoteForm = () => {
     event.target.anec.value = "";
 
     dispatch(createAnec(content));
+    dispatch(changeNoti(content));
+
+    setTimeout(() => {
+      dispatch(changeNoti(""));
+    }, 5000);
   };
 
   return (
