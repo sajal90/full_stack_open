@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { getAnecdotes } from "./requests.js";
 import AnecdoteForm from "./components/AnecdoteForm.jsx";
 import Notification from "./components/Notification.jsx";
 
@@ -11,8 +12,7 @@ const App = () => {
   const result = useQuery(
     {
       queryKey: ["anecdotes"],
-      queryFn: () =>
-        axios.get("http://localhost:3001/anecdotes").then((res) => res.data),
+      queryFn: getAnecdotes,
       retry: 1,
     },
   );
