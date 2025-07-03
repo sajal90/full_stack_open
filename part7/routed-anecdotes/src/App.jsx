@@ -4,10 +4,11 @@ import {
   Link,
   Route,
   Routes,
+  useNavigate,
   useParams,
 } from "react-router-dom";
 
-const Menu = ({ anecdotes }) => {
+const Menu = ({ anecdotes, addNew, notification, handleNotification }) => {
   const padding = {
     paddingRight: 5,
   };
@@ -18,6 +19,7 @@ const Menu = ({ anecdotes }) => {
         <Link style={padding} to="/">home</Link>
         <Link style={padding} to="/create">create</Link>
         <Link style={padding} to="/about">about</Link>
+        <p>{notification}</p>
       </div>
 
       <Routes>
@@ -25,7 +27,15 @@ const Menu = ({ anecdotes }) => {
           path="/anecdotes/:id"
           element={<Anecdote anecdotes={anecdotes} />}
         />
-        <Route path="/create" element={<CreateNew />} />
+        <Route
+          path="/create"
+          element={
+            <CreateNew
+              addNew={addNew}
+              handleNotification={handleNotification}
+            />
+          }
+        />
         <Route path="/about" element={<About />} />
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
       </Routes>
@@ -43,7 +53,7 @@ const Anecdote = ({ anecdotes }) => {
         has {anecdote.votes} votes
       </p>
       <p>
-        for more info see <Link to={anecdote.info}>{anecdote.info}</Link>
+        for more info see <a href={anecdote.info}>{anecdote.info}</a>
       </p>
     </div>
   );
@@ -100,6 +110,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
   const [info, setInfo] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -109,6 +120,8 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+    props.handleNotification(`a new anecdote ${content} created!`);
+    navigate("/");
   };
 
   return (
@@ -170,6 +183,13 @@ const App = () => {
     setAnecdotes(anecdotes.concat(anecdote));
   };
 
+  const handleNotification = (noti) => {
+    setNotification(noti);
+    setTimeout(() => {
+      setNotification("");
+    }, 5000);
+  };
+
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
 
   const vote = (id) => {
@@ -186,7 +206,12 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Menu anecdotes={anecdotes} />
+      <Menu
+        anecdotes={anecdotes}
+        addNew={addNew}
+        notification={notification}
+        handleNotification={handleNotification}
+      />
       <Footer />
     </div>
   );
