@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "./reducers/notificationReducer.js";
+import { createBlog, updateLike } from "./reducers/blogReducer.js";
 import Blog from "./components/Blog.jsx";
 import Notification from "./components/Notification.jsx";
 import blogService from "./services/blogs.js";
@@ -9,7 +10,6 @@ import Togglable from "./components/Togglable.jsx";
 import BlogForm from "./components/BlogForm.jsx";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -17,12 +17,16 @@ const App = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
-      setBlogs(sortedBlogs);
-    });
-  }, []);
+  const blogs = useSelector((state) => {
+    return state.blogs;
+  });
+
+  // useEffect(() => {
+  //   blogService.getAll().then((blogs) => {
+  //     const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+  //     setBlogs(sortedBlogs);
+  //   });
+  // }, []);
 
   useEffect(() => {
     const userLogged = window.localStorage.getItem("loggedBlogUser");
@@ -33,11 +37,9 @@ const App = () => {
     }
   }, []);
 
-  const handleBlogCreate = async (blog) => {
+  const handleBlogCreate = (blog) => {
     try {
-      const newBlog = await blogService.create(blog);
-
-      setBlogs(blogs.concat(newBlog));
+      dispatch(createBlog(blog));
       togglableRef.current.toggleVisible();
 
       dispatch(
@@ -48,23 +50,24 @@ const App = () => {
     }
   };
 
-  const handleLike = async (blog) => {
-    const newBlog = {
-      author: blog.author,
-      likes: blog.likes + 1,
-      url: blog.url,
-      title: blog.title,
-      user: blog.user.id,
-    };
+  const handleLike = (blog) => {
+    // const newBlog = {
+    //   author: blog.author,
+    //   likes: blog.likes + 1,
+    //   url: blog.url,
+    //   title: blog.title,
+    //   user: blog.user.id,
+    // };
 
     try {
-      const updatedBlog = await blogService.update(blog.id, newBlog);
-
-      const newBlogs = blogs.map((b) =>
-        b.id === updatedBlog.id ? updatedBlog : b
-      );
-      newBlogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(newBlogs);
+      dispatch(updateLike(blog));
+      // const updatedBlog = await blogService.update(blog.id, newBlog);
+      //
+      // const newBlogs = blogs.map((b) =>
+      //   b.id === updatedBlog.id ? updatedBlog : b
+      // );
+      // newBlogs.sort((a, b) => b.likes - a.likes);
+      // setBlogs(newBlogs);
     } catch (e) {
       console.log(e);
     }
@@ -82,7 +85,7 @@ const App = () => {
     try {
       await blogService.remove(blog.id);
       const newBlogs = blogs.filter((b) => b.id !== blog.id);
-      setBlogs(newBlogs);
+      // setBlogs(newBlogs);
     } catch (error) {
       console.log(error);
     }
