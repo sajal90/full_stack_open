@@ -4,6 +4,7 @@ import { setNotification } from "./reducers/notificationReducer.js";
 import { createBlog, removeBlog, updateLike } from "./reducers/blogReducer.js";
 import { logIn, removeUser, setUser } from "./reducers/loginReducer.js";
 import Blog from "./components/Blog.jsx";
+import Users from "./components/Users.jsx";
 import Notification from "./components/Notification.jsx";
 import blogService from "./services/blogs.js";
 import loginService from "./services/login.js";
@@ -21,13 +22,10 @@ const App = () => {
   const blogs = useSelector((state) => {
     return state.blogs;
   });
-
-  // useEffect(() => {
-  //   blogService.getAll().then((blogs) => {
-  //     const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
-  //     setBlogs(sortedBlogs);
-  //   });
-  // }, []);
+  const users = useSelector((state) => {
+    console.log(state.users);
+    return state.users;
+  });
 
   useEffect(() => {
     const userLogged = window.localStorage.getItem("loggedBlogUser");
@@ -51,23 +49,8 @@ const App = () => {
   };
 
   const handleLike = (blog) => {
-    // const newBlog = {
-    //   author: blog.author,
-    //   likes: blog.likes + 1,
-    //   url: blog.url,
-    //   title: blog.title,
-    //   user: blog.user.id,
-    // };
-
     try {
       dispatch(updateLike(blog));
-      // const updatedBlog = await blogService.update(blog.id, newBlog);
-      //
-      // const newBlogs = blogs.map((b) =>
-      //   b.id === updatedBlog.id ? updatedBlog : b
-      // );
-      // newBlogs.sort((a, b) => b.likes - a.likes);
-      // setBlogs(newBlogs);
     } catch (e) {
       console.log(e);
     }
@@ -83,10 +66,7 @@ const App = () => {
     }
 
     try {
-      // await blogService.remove(blog.id);
-      // const newBlogs = blogs.filter((b) => b.id !== blog.id);
       dispatch(removeBlog(blog));
-      // setBlogs(newBlogs);
     } catch (error) {
       console.log(error);
     }
@@ -96,11 +76,6 @@ const App = () => {
     event.preventDefault();
     try {
       dispatch(setUser({ username, password }));
-      // const user = await loginService.login({ username, password });
-      //
-      // window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
-      // setUser(user);
-      // blogService.setToken(user.token);
       setUsername("");
       setPassword("");
     } catch (error) {
@@ -150,6 +125,7 @@ const App = () => {
           logout
         </button>
       </p>
+      <Users users={users} />
       <Togglable ref={togglableRef}>
         <BlogForm
           handleBlogCreate={handleBlogCreate}

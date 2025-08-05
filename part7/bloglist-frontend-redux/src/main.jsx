@@ -3,8 +3,10 @@ import { Provider } from "react-redux";
 import App from "./App.jsx";
 import store from "./store.js";
 import { initializeBlogs } from "./reducers/blogReducer.js";
+import { initializeUsers } from "./reducers/userReducer.js";
 
 store.dispatch(initializeBlogs());
+store.dispatch(initializeUsers());
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
