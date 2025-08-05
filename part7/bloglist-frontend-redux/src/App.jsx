@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "./reducers/notificationReducer.js";
 import { createBlog, removeBlog, updateLike } from "./reducers/blogReducer.js";
+import { logIn, removeUser, setUser } from "./reducers/loginReducer.js";
 import Blog from "./components/Blog.jsx";
 import Notification from "./components/Notification.jsx";
 import blogService from "./services/blogs.js";
@@ -12,11 +13,11 @@ import BlogForm from "./components/BlogForm.jsx";
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
   const togglableRef = useRef();
 
   const dispatch = useDispatch();
 
+  const user = useSelector((state) => state.login);
   const blogs = useSelector((state) => {
     return state.blogs;
   });
@@ -32,8 +33,7 @@ const App = () => {
     const userLogged = window.localStorage.getItem("loggedBlogUser");
     if (userLogged) {
       const user = JSON.parse(userLogged);
-      setUser(user);
-      blogService.setToken(user.token);
+      dispatch(logIn(user));
     }
   }, []);
 
@@ -95,11 +95,12 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await loginService.login({ username, password });
-
-      window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
-      setUser(user);
-      blogService.setToken(user.token);
+      dispatch(setUser({ username, password }));
+      // const user = await loginService.login({ username, password });
+      //
+      // window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
+      // setUser(user);
+      // blogService.setToken(user.token);
       setUsername("");
       setPassword("");
     } catch (error) {
@@ -144,7 +145,7 @@ const App = () => {
         {user.name} logged in
         <button
           type="button"
-          onClick={() => window.localStorage.removeItem("loggedBlogUser")}
+          onClick={() => dispatch(removeUser())}
         >
           logout
         </button>
