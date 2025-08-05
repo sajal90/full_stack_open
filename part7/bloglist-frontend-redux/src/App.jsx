@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "./reducers/notificationReducer.js";
-import { createBlog, updateLike } from "./reducers/blogReducer.js";
+import { createBlog, removeBlog, updateLike } from "./reducers/blogReducer.js";
 import Blog from "./components/Blog.jsx";
 import Notification from "./components/Notification.jsx";
 import blogService from "./services/blogs.js";
@@ -83,8 +83,9 @@ const App = () => {
     }
 
     try {
-      await blogService.remove(blog.id);
-      const newBlogs = blogs.filter((b) => b.id !== blog.id);
+      // await blogService.remove(blog.id);
+      // const newBlogs = blogs.filter((b) => b.id !== blog.id);
+      dispatch(removeBlog(blog));
       // setBlogs(newBlogs);
     } catch (error) {
       console.log(error);
