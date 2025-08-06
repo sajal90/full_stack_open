@@ -18,7 +18,7 @@ const Togglable = forwardRef((props, refs) => {
     <div>
       <div style={hideWhenVisible}>
         <button type="button" onClick={toggleVisible}>
-          new blog
+          create new
         </button>
       </div>
       <div style={showWhenVisible}>

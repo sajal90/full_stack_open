@@ -27,7 +27,6 @@ export const setUser = (credentials) => {
       blogService.setToken(loggedInUser.token);
       dispatch(logIn(loggedInUser));
     } catch (error) {
-      console.log(error);
       dispatch(setNotification(error.response.data.error, 5));
     }
   };

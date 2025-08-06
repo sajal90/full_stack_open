@@ -3,13 +3,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "./reducers/notificationReducer.js";
 import { createBlog, removeBlog, updateLike } from "./reducers/blogReducer.js";
 import { logIn, removeUser, setUser } from "./reducers/loginReducer.js";
-import Blog from "./components/Blog.jsx";
+import BlogList from "./components/BlogList.jsx";
 import Users from "./components/Users.jsx";
+import User from "./components/User.jsx";
 import Notification from "./components/Notification.jsx";
 import blogService from "./services/blogs.js";
 import loginService from "./services/login.js";
 import Togglable from "./components/Togglable.jsx";
+import Blog from "./components/Blog.jsx";
 import BlogForm from "./components/BlogForm.jsx";
+
+import {
+  BrowserRouter as Router,
+  Link,
+  Route,
+  Routes,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -23,7 +34,6 @@ const App = () => {
     return state.blogs;
   });
   const users = useSelector((state) => {
-    console.log(state.users);
     return state.users;
   });
 
@@ -112,11 +122,19 @@ const App = () => {
     );
   }
 
+  const menuStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    backgroundColor: "grey",
+    padding: "10px 20px",
+  };
+
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification />
-      <p>
+      <div style={menuStyle}>
+        <Link to="/blogs">blogs</Link>
+        <Link to="/users">users</Link>
         {user.name} logged in
         <button
           type="button"
@@ -124,22 +142,45 @@ const App = () => {
         >
           logout
         </button>
-      </p>
-      <Users users={users} />
-      <Togglable ref={togglableRef}>
-        <BlogForm
-          handleBlogCreate={handleBlogCreate}
+      </div>
+      <h2>blog app</h2>
+      <Notification />
+      <div>
+      </div>
+      <Routes>
+        <Route
+          path="/users/:id"
+          element={<User users={users} />}
         />
-      </Togglable>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={handleLike}
-          handleRemove={handleRemove}
-          user={user}
+        <Route
+          path="/blogs"
+          element={
+            <div>
+              <Togglable ref={togglableRef}>
+                <BlogForm
+                  handleBlogCreate={handleBlogCreate}
+                />
+              </Togglable>
+              <BlogList blogs={blogs} />
+            </div>
+          }
         />
-      ))}
+        <Route
+          path="/users"
+          element={<Users users={users} />}
+        />
+        <Route
+          path="/blogs/:id"
+          element={
+            <Blog
+              blogs={blogs}
+              handleLike={handleLike}
+              handleRemove={handleRemove}
+              user={user}
+            />
+          }
+        />
+      </Routes>
     </div>
   );
 };

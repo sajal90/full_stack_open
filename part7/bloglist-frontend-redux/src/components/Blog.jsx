@@ -1,53 +1,36 @@
-import { useState } from "react";
+import { useParams } from "react-router-dom";
 
-const Blog = ({ blog, handleLike, handleRemove, user }) => {
-  const [visible, setVisible] = useState(false);
+const Blog = ({ blogs, handleLike, handleRemove, user }) => {
+  const id = useParams().id;
+  const blog = blogs.find((b) => b.id === id);
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
-  const toggleVisible = () => {
-    setVisible(!visible);
-  };
-
-  if (!visible) {
-    return (
-      <div className="blog" data-testid="blog" style={blogStyle}>
-        {blog.title} {blog.author}
-        <button type="button" onClick={toggleVisible}>view</button>
-      </div>
-    );
+  if (!blog) {
+    return null;
   }
 
   return (
-    <div className="blog" data-testid="blog" style={blogStyle}>
+    <div>
+      <h1>{blog.title}</h1>
       <div>
-        {blog.title} {blog.author}
-        <button type="button" onClick={toggleVisible}>hide</button>
-      </div>
-      <div>
-        {blog.url}
-      </div>
-      <div>
-        likes {blog.likes}
-        <button type="button" onClick={() => handleLike(blog)}>like</button>
-      </div>
-      <div>
-        {blog.user.name}
-      </div>
-      <div>
-        {user.username === blog.user.username
-          ? (
-            <button type="button" onClick={() => handleRemove(blog)}>
-              remove
-            </button>
-          )
-          : ""}
+        <div>
+          {blog.url}
+          <div>
+            likes {blog.likes}
+            <button type="button" onClick={() => handleLike(blog)}>like</button>
+          </div>
+          <div>
+            added by {blog.user.name}
+          </div>
+          <div>
+            {user.username === blog.user.username
+              ? (
+                <button type="button" onClick={() => handleRemove(blog)}>
+                  remove
+                </button>
+              )
+              : ""}
+          </div>
+        </div>
       </div>
     </div>
   );
