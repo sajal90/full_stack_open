@@ -13,15 +13,13 @@ const BlogList = ({ blogs }) => {
 
   return (
     <div>
-      <p>
-        <ul style={{ margin: 0, padding: 0 }}>
-          {blogs.map((blog) => (
-            <li key={blog.id} style={blogStyle}>
-              <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-            </li>
-          ))}
-        </ul>
-      </p>
+      <ul style={{ margin: 0, padding: 0 }}>
+        {blogs.map((blog) => (
+          <li key={blog.id} style={blogStyle}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

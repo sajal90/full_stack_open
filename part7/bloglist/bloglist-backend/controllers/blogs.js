@@ -3,9 +3,13 @@ const blogRouter = require("express").Router();
 const Blog = require("../models/blog.js");
 const User = require("../models/user.js");
 const mongoose = require("mongoose");
+const { request, response } = require("express");
 
 blogRouter.get("/", async (request, response) => {
-	const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
+	const blogs = await Blog.find({}).populate("user", {
+		username: 1,
+		name: 1,
+	});
 	response.json(blogs);
 });
 
@@ -38,6 +42,17 @@ blogRouter.post("/", async (request, response) => {
 	response.status(201).json(savedBlog);
 });
 
+blogRouter.post("/:id/comments", async (request, response) => {
+	const comment = request.body.comment;
+
+	if (!comment) return response.status(400);
+	const blog = await Blog.findById(request.params.id);
+	blog.comments = blog.comments.concat(comment);
+
+	const updatedBlog = await blog.save();
+	response.json(updatedBlog);
+});
+
 blogRouter.delete("/:id", async (request, response) => {
 	const userid = request.user.id;
 	const blog = await Blog.findById(request.params.id);
@@ -58,6 +73,7 @@ blogRouter.put("/:id", async (request, response) => {
 		author: body.author,
 		url: body.url,
 		likes: body.likes,
+		comments: body.comments,
 	};
 
 	const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {

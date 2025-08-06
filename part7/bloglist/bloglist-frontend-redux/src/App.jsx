@@ -18,7 +18,6 @@ import {
   Link,
   Route,
   Routes,
-  useNavigate,
   useParams,
 } from "react-router-dom";
 
