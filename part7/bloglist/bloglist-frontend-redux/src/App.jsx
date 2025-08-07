@@ -124,11 +124,10 @@ const App = () => {
   const menuStyle = {
     display: "flex",
     alignItems: "center",
-    gap: "10px",
-    backgroundColor: "grey",
-    padding: "10px 20px",
+    gap: "20px",
+    padding: "15px 0",
+    borderBottom: "1px solid #e0e0e0",
   };
-
   return (
     <div>
       <div style={menuStyle}>
