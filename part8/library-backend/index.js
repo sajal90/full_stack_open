@@ -141,10 +141,13 @@ const resolvers = {
 		allBooks: async (root, args) => {
 			const query = {};
 			if (args.author) {
-				query.author = args.author;
+				const author = await Author.findOne({ name: args.author });
+				if (author) {
+					query.author = author._id;
+				}
 			}
 			if (args.genre) {
-				query.genre = { $in: [args.genre] };
+				query.genres = { $in: [args.genre] };
 			}
 
 			return Book.find(query);
@@ -166,13 +169,33 @@ const resolvers = {
 	},
 	Mutation: {
 		addBook: async (root, args) => {
-			let author = authors.find((a) => a.name == args.author);
+			let author = await Author.findOne({ name: args.author });
 			if (!author) {
 				author = new Author({ name: args.author });
-				await author.save();
+				try {
+					await author.save();
+				} catch (error) {
+					throw new GraphQLError("Author validation failed", {
+						extensions: {
+							code: "BAD_USER_INPUT",
+							invalidArgs: args.author,
+							error,
+						},
+					});
+				}
 			}
 			const book = new Book({ ...args, author: author._id });
-			await book.save();
+			try {
+				await book.save();
+			} catch (error) {
+				throw new GraphQLError("Book validation failed", {
+					extensions: {
+						code: "BAD_USER_INPUT",
+						invalidArgs: args.author,
+						error,
+					},
+				});
+			}
 			return book;
 		},
 		editAuthor: async (root, args) => {
