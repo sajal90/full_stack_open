@@ -132,8 +132,6 @@ const typeDefs = `
 		id: ID!,
 		genres: [String!]!,
 	}
-
-
 `;
 
 const resolvers = {
@@ -146,7 +144,7 @@ const resolvers = {
 				query.author = args.author;
 			}
 			if (args.genre) {
-				query.genre = args.genre;
+				query.genre = { $in: [args.genre] };
 			}
 
 			return Book.find(query);
