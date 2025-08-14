@@ -174,7 +174,7 @@ const resolvers = {
 				query.genres = { $in: [args.genre] };
 			}
 
-			return Book.find(query);
+			return Book.find(query).populate("author");
 		},
 		allAuthors: async () => {
 			const authors = await Author.find({});
